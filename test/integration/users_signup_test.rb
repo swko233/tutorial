@@ -16,4 +16,18 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_select 'div.alert'
     assert_select 'form[action="/signup"]' 
   end
+
+  #  有効なユーザーが保存されることを確かめる
+  test "valid signup information" do
+    get signup_path
+    assert_difference 'User.count', 1 do
+      post users_path, params: { user: { name:  "rails",
+                                         email: "user@valid.com",
+                                         password:              "hogehoge",
+                                         password_confirmation: "hogehoge" } }
+    end
+    follow_redirect!
+    assert_template 'users/show'
+    assert_not flash.nil?
+  end
 end
